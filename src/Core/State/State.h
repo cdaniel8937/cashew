@@ -42,10 +42,14 @@ class State {
         STATE_SELECT_PLANE,
         STATE_DRAW,
         STATE_DELETE,
-        STATE_MIRRPR,
+        STATE_MIRROR,
+        STATE_MOVE_CENTER,
         STATE_ID_MAX
     };
     static State* statePool[STATE_ID_MAX];
+    int getStateID() {
+        return stateID;
+    }
 
    protected:
     Camera* mCamera;

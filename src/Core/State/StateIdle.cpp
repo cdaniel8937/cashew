@@ -2,14 +2,16 @@
 // billhsu.x@gmail.com
 
 #include "StateIdle.h"
-#include "StateSelectPlane.h"
+#include "StateDraw.h"
 #include "Core/Camera/Camera.h"
 #include "Core/Controller/Controller.h"
 #include "Core/Controller/Mouse.h"
 #include "Core/Basic/Plane.h"
-
+#include "Core/Basic/SketchLine.h"
+#include <vector>
 StateIdle::StateIdle() {
     stateID = STATE_IDLE;
+    internalState = INTERNAL_STATE_IDLE;
     assert(statePool[stateID] == NULL);
     statePool[stateID] = this;
     stateName = "idle";
@@ -18,23 +20,86 @@ StateIdle::StateIdle() {
 void StateIdle::MouseButton(int button, int state, int x, int y) {
     if (button == Mouse::MOUSE_BUTTON_SCROLL) {
         mCamera->setCamDist(mCamera->distance + 0.1f * state);
-    } else if (button == Mouse::MOUSE_BUTTON_LEFT &&
-               state == Mouse::MOUSE_ACTION_UP) {
-        Vector3 v;
-        mCamera->getPoint(x, y, Controller::sketchLines, v);
-        static_cast<StateSelectPlane*>(State::statePool[STATE_SELECT_PLANE])
-            ->selectedPoints.clear();
-        static_cast<StateSelectPlane*>(State::statePool[STATE_SELECT_PLANE])
-            ->selectedPoints.push_back(v);
-        Plane::buildPlane(
-            static_cast<StateSelectPlane*>(State::statePool[STATE_SELECT_PLANE])
-                ->selectedPoints,
-            Controller::currPlane);
-        Quaternion q = Quaternion::fromVector(Controller::currPlane.N,
-                                              Quaternion::Z_NEG_AXIS);
-        mCamera->setCamCenterTo(v);
-        mCamera->rotateCamTo(q);
-        enterState(State::statePool[STATE_SELECT_PLANE]);
+    } else if (button == Mouse::MOUSE_BUTTON_LEFT) {
+        std::vector<Vector3> selectedPoints;
+        Vector3 planeVec = Vector3(0, 1, 0);
+        if (state == Mouse::MOUSE_ACTION_DOWN) {
+            internalState = INTERNAL_STATE_MOUSE_DOWN;
+            Vector3 v;
+            mCamera->getPoint(x, y, SketchLine::getGlobalLineSegments(), v);
+
+            if (!Controller::bCurrLine) {
+                selectedPoints.push_back(v);
+                Plane::buildPlane(selectedPoints, Controller::currPlane,
+                                  planeVec);
+                if (Controller::currPlane.N.dot(mCamera->getDirection()) > 0) {
+                    Controller::currPlane = -Controller::currPlane;
+                }
+                dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])
+                    ->selectedPoints = selectedPoints;
+                dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])
+                    ->startPoint = v;
+                dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])
+                    ->endPoint = v;
+                dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])
+                    ->internalState =
+                    StateDraw::STATE_DRAW_START_POINT_SELECTED;
+                enterState(State::statePool[STATE_DRAW]);
+                internalState = INTERNAL_STATE_IDLE;
+            } else {
+                selectedPoint = v;
+            }
+        } else if (state == Mouse::MOUSE_ACTION_UP) {
+            if (Controller::bCurrLine) {
+                SketchLine* sketchLine =
+                    SketchLine::lineSegmentToSkectLine(Controller::currLine.ID);
+                if (sketchLine == NULL) {
+                    return;
+                }
+                unsigned long size = sketchLine->getLineSegments().size();
+                selectedPoints.push_back(
+                    sketchLine->getLineSegments()[0].points[0]);
+                selectedPoints.push_back(
+                    sketchLine->getLineSegments()[size - 1].points[1]);
+                Plane::buildPlane(selectedPoints, Controller::currPlane,
+                                  planeVec);
+                if (Controller::currPlane.N.dot(mCamera->getDirection()) > 0) {
+                    Controller::currPlane = -Controller::currPlane;
+                }
+                Quaternion q = Quaternion::fromVector(Controller::currPlane.N,
+                                                      Quaternion::Z_NEG_AXIS);
+                mCamera->rotateCamTo(q);
+                mCamera->setCamCenterTo((Controller::currLine.points[0] +
+                                         Controller::currLine.points[1]) /
+                                        2.0f);
+                dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])
+                    ->selectedPoints = selectedPoints;
+                enterState(State::statePool[STATE_DRAW]);
+                internalState = INTERNAL_STATE_IDLE;
+            }
+        }
+    }
+}
+
+void StateIdle::MouseLeftDrag(int dx, int dy) {
+    if (INTERNAL_STATE_MOUSE_DOWN == internalState) {
+        std::vector<Vector3> selectedPoints;
+        Vector3 planeVec = Vector3(0, 1, 0);
+        selectedPoints.push_back(selectedPoint);
+        Plane::buildPlane(selectedPoints, Controller::currPlane, planeVec);
+        if (Controller::currPlane.N.dot(mCamera->getDirection()) > 0) {
+            Controller::currPlane = -Controller::currPlane;
+        }
+        dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])->selectedPoints =
+            selectedPoints;
+        dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])->startPoint =
+            selectedPoint;
+        dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])->endPoint =
+            selectedPoint;
+        dynamic_cast<StateDraw*>(State::statePool[STATE_DRAW])->internalState =
+            StateDraw::STATE_DRAW_START_POINT_SELECTED;
+        enterState(State::statePool[STATE_DRAW]);
+        internalState = INTERNAL_STATE_IDLE;
     }
 }
 
@@ -45,6 +110,7 @@ void StateIdle::MouseRightDrag(int dx, int dy) {
 }
 
 void StateIdle::prepareState() {
+    internalState = INTERNAL_STATE_IDLE;
 }
 
 void StateIdle::postState() {
@@ -56,5 +122,7 @@ void StateIdle::UIEvent(int event) {
         mCamera->rotateCamTo(q);
     } else if (event == Controller::BTN_ID_DELETE_LINE) {
         enterState(State::statePool[STATE_DELETE]);
+    } else if (event == Controller::BTN_ID_MOVE_CENTER) {
+        enterState(State::statePool[STATE_MOVE_CENTER]);
     }
 }

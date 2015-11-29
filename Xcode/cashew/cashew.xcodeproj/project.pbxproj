@@ -13,7 +13,7 @@
 		0C2247701A3D925A00349BCC /* lua_scripts in Resources */ = {isa = PBXBuildFile; fileRef = 0C22476F1A3D925A00349BCC /* lua_scripts */; };
 		0C2247721A3D92F700349BCC /* Shader in Resources */ = {isa = PBXBuildFile; fileRef = 0C2247711A3D92F700349BCC /* Shader */; };
 		0C2E4F341A65641D003C6ABF /* PlaneRenderer.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C2E4F311A65641D003C6ABF /* PlaneRenderer.cpp */; };
-		0C3B904D1ABD60AE00F7C594 /* LineSketches.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C3B904B1ABD60AE00F7C594 /* LineSketches.cpp */; };
+		0C3B904D1ABD60AE00F7C594 /* DrawLineSegment.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C3B904B1ABD60AE00F7C594 /* DrawLineSegment.cpp */; };
 		0C40ACB71AE35F52001CAC31 /* fontstash.c in Sources */ = {isa = PBXBuildFile; fileRef = 0C40ACB41AE35F52001CAC31 /* fontstash.c */; };
 		0C45C6051A86213300A5424F /* TextureManager.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C45C6031A86213300A5424F /* TextureManager.cpp */; };
 		0C45C60B1A86246200A5424F /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C45C6081A86246200A5424F /* stb_image.cpp */; };
@@ -28,6 +28,8 @@
 		0C5F954F1A614F0100BE91E9 /* UIImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C5F95481A614F0100BE91E9 /* UIImpl.cpp */; };
 		0C5F95521A614FD500BE91E9 /* Utility.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C5F95501A614FD500BE91E9 /* Utility.cpp */; };
 		0C5F95561A6157C700BE91E9 /* GLSLShader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C5F95541A6157C700BE91E9 /* GLSLShader.cpp */; };
+		0C62CCE21BF8825000B2454B /* StateMoveCenter.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C62CCE01BF8825000B2454B /* StateMoveCenter.cpp */; };
+		0C62CCE51BF8864200B2454B /* StateMoveCenterImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C62CCE31BF8864200B2454B /* StateMoveCenterImpl.cpp */; };
 		0C634FD51A30A35A0085E502 /* StateSelectPlane.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C634FD31A30A35A0085E502 /* StateSelectPlane.cpp */; };
 		0C68F9B21B229DAA00DDD23A /* StateDelete.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C68F9B01B229DAA00DDD23A /* StateDelete.cpp */; };
 		0C7201A81A7DFE4700CFA38F /* DepthPeeling.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C7201A61A7DFE4700CFA38F /* DepthPeeling.cpp */; };
@@ -60,6 +62,7 @@
 		0C916B2D1A20A0AE00676D57 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 0C916B2C1A20A0AE00676D57 /* Images.xcassets */; };
 		0C916B301A20A0AE00676D57 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 0C916B2E1A20A0AE00676D57 /* MainMenu.xib */; };
 		0C916B3C1A20A0AE00676D57 /* cashewTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 0C916B3B1A20A0AE00676D57 /* cashewTests.m */; };
+		0C91DBEC1BEF653300AA38D3 /* SketchLine.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C91DBEA1BEF653300AA38D3 /* SketchLine.cpp */; };
 		0C925C751B197D6B00B304F9 /* FlushDrawWrapper.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0C925C731B197D6B00B304F9 /* FlushDrawWrapper.cpp */; };
 		0CC49AEC1B64E391007BC02A /* StateMirror.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CC49AEB1B64E391007BC02A /* StateMirror.cpp */; };
 		0CC49AEF1B64E9A0007BC02A /* StateMirrorImpl.cpp in Sources */ = {isa = PBXBuildFile; fileRef = 0CC49AED1B64E9A0007BC02A /* StateMirrorImpl.cpp */; };
@@ -91,8 +94,8 @@
 		0C2247711A3D92F700349BCC /* Shader */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Shader; sourceTree = "<group>"; };
 		0C2E4F311A65641D003C6ABF /* PlaneRenderer.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = PlaneRenderer.cpp; sourceTree = "<group>"; };
 		0C2E4F321A65641D003C6ABF /* PlaneRenderer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PlaneRenderer.h; sourceTree = "<group>"; };
-		0C3B904B1ABD60AE00F7C594 /* LineSketches.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = LineSketches.cpp; path = ../../../../../../src/OpenGL/Impl/Scene/LineSketches.cpp; sourceTree = "<group>"; };
-		0C3B904C1ABD60AE00F7C594 /* LineSketches.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = LineSketches.h; path = ../../../../../../src/OpenGL/Impl/Scene/LineSketches.h; sourceTree = "<group>"; };
+		0C3B904B1ABD60AE00F7C594 /* DrawLineSegment.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = DrawLineSegment.cpp; path = ../../../../../../src/OpenGL/Impl/Scene/DrawLineSegment.cpp; sourceTree = "<group>"; };
+		0C3B904C1ABD60AE00F7C594 /* DrawLineSegment.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = DrawLineSegment.h; path = ../../../../../../src/OpenGL/Impl/Scene/DrawLineSegment.h; sourceTree = "<group>"; };
 		0C40ACB41AE35F52001CAC31 /* fontstash.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = fontstash.c; sourceTree = "<group>"; };
 		0C40ACB51AE35F52001CAC31 /* fontstash.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = fontstash.h; sourceTree = "<group>"; };
 		0C40ACB61AE35F52001CAC31 /* stb_truetype.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = stb_truetype.h; sourceTree = "<group>"; };
@@ -121,6 +124,10 @@
 		0C5F95511A614FD500BE91E9 /* Utility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = Utility.h; path = ../../../../../src/OpenGL/Util/Utility.h; sourceTree = "<group>"; };
 		0C5F95541A6157C700BE91E9 /* GLSLShader.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = GLSLShader.cpp; sourceTree = "<group>"; };
 		0C5F95551A6157C700BE91E9 /* GLSLShader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GLSLShader.h; sourceTree = "<group>"; };
+		0C62CCE01BF8825000B2454B /* StateMoveCenter.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StateMoveCenter.cpp; sourceTree = "<group>"; };
+		0C62CCE11BF8825000B2454B /* StateMoveCenter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateMoveCenter.h; sourceTree = "<group>"; };
+		0C62CCE31BF8864200B2454B /* StateMoveCenterImpl.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = StateMoveCenterImpl.cpp; path = ../../../../../../src/OpenGL/Impl/State/StateMoveCenterImpl.cpp; sourceTree = "<group>"; };
+		0C62CCE41BF8864200B2454B /* StateMoveCenterImpl.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = StateMoveCenterImpl.h; path = ../../../../../../src/OpenGL/Impl/State/StateMoveCenterImpl.h; sourceTree = "<group>"; };
 		0C634FD31A30A35A0085E502 /* StateSelectPlane.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StateSelectPlane.cpp; sourceTree = "<group>"; };
 		0C634FD41A30A35A0085E502 /* StateSelectPlane.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = StateSelectPlane.h; sourceTree = "<group>"; };
 		0C68F9B01B229DAA00DDD23A /* StateDelete.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = StateDelete.cpp; sourceTree = "<group>"; };
@@ -187,6 +194,8 @@
 		0C916B351A20A0AE00676D57 /* cashewTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = cashewTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		0C916B3A1A20A0AE00676D57 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		0C916B3B1A20A0AE00676D57 /* cashewTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = cashewTests.m; sourceTree = "<group>"; };
+		0C91DBEA1BEF653300AA38D3 /* SketchLine.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; name = SketchLine.cpp; path = ../../../../../src/Core/Basic/SketchLine.cpp; sourceTree = "<group>"; };
+		0C91DBEB1BEF653300AA38D3 /* SketchLine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = SketchLine.h; path = ../../../../../src/Core/Basic/SketchLine.h; sourceTree = "<group>"; };
 		0C925C731B197D6B00B304F9 /* FlushDrawWrapper.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = FlushDrawWrapper.cpp; sourceTree = "<group>"; };
 		0C925C741B197D6B00B304F9 /* FlushDrawWrapper.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = FlushDrawWrapper.h; sourceTree = "<group>"; };
 		0CC49AEA1B64E376007BC02A /* StateMirror.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = StateMirror.h; sourceTree = "<group>"; };
@@ -311,8 +320,8 @@
 		0C5F953D1A614F0100BE91E9 /* Scene */ = {
 			isa = PBXGroup;
 			children = (
-				0C3B904B1ABD60AE00F7C594 /* LineSketches.cpp */,
-				0C3B904C1ABD60AE00F7C594 /* LineSketches.h */,
+				0C3B904B1ABD60AE00F7C594 /* DrawLineSegment.cpp */,
+				0C3B904C1ABD60AE00F7C594 /* DrawLineSegment.h */,
 				0C5F953E1A614F0100BE91E9 /* Scene.cpp */,
 				0C5F953F1A614F0100BE91E9 /* Scene.h */,
 			);
@@ -332,6 +341,8 @@
 				0CEC95101B2414260069AAEC /* StateDeleteImpl.cpp */,
 				0CC49AEE1B64E9A0007BC02A /* StateMirrorImpl.h */,
 				0CC49AED1B64E9A0007BC02A /* StateMirrorImpl.cpp */,
+				0C62CCE31BF8864200B2454B /* StateMoveCenterImpl.cpp */,
+				0C62CCE41BF8864200B2454B /* StateMoveCenterImpl.h */,
 			);
 			path = State;
 			sourceTree = "<group>";
@@ -422,6 +433,8 @@
 				0C8889711A2984C600068098 /* Plane.cpp */,
 				0C8889721A2984C600068098 /* Plane.h */,
 				0C8889731A2984C600068098 /* Ray.h */,
+				0C91DBEA1BEF653300AA38D3 /* SketchLine.cpp */,
+				0C91DBEB1BEF653300AA38D3 /* SketchLine.h */,
 			);
 			path = Basic;
 			sourceTree = "<group>";
@@ -482,6 +495,8 @@
 				0C68F9B01B229DAA00DDD23A /* StateDelete.cpp */,
 				0CC49AEA1B64E376007BC02A /* StateMirror.h */,
 				0CC49AEB1B64E391007BC02A /* StateMirror.cpp */,
+				0C62CCE01BF8825000B2454B /* StateMoveCenter.cpp */,
+				0C62CCE11BF8825000B2454B /* StateMoveCenter.h */,
 			);
 			name = State;
 			path = ../../../../src/Core/State;
@@ -687,6 +702,7 @@
 			files = (
 				0C916B2B1A20A0AE00676D57 /* main.m in Sources */,
 				0C88898C1A2984C600068098 /* Utility.cpp in Sources */,
+				0C62CCE21BF8825000B2454B /* StateMoveCenter.cpp in Sources */,
 				0C8D442B1A2199B8005421E1 /* CashewApp.mm in Sources */,
 				0C529D2A1A7364C10034B1E5 /* StateDrawImpl.cpp in Sources */,
 				0C40ACB71AE35F52001CAC31 /* fontstash.c in Sources */,
@@ -717,7 +733,7 @@
 				0C7201A81A7DFE4700CFA38F /* DepthPeeling.cpp in Sources */,
 				0CEC95121B2414260069AAEC /* StateDeleteImpl.cpp in Sources */,
 				0C916B291A20A0AE00676D57 /* CashewAppDelegate.mm in Sources */,
-				0C3B904D1ABD60AE00F7C594 /* LineSketches.cpp in Sources */,
+				0C3B904D1ABD60AE00F7C594 /* DrawLineSegment.cpp in Sources */,
 				0C634FD51A30A35A0085E502 /* StateSelectPlane.cpp in Sources */,
 				0CE999361B510C65003378BF /* UILabelImpl.cpp in Sources */,
 				0C0118161AC6F64A0042E1CC /* FileOperations.mm in Sources */,
@@ -727,6 +743,7 @@
 				0C50774A1AB56F7E00145A41 /* LineSegmentRenderer.cpp in Sources */,
 				0CC49AEC1B64E391007BC02A /* StateMirror.cpp in Sources */,
 				0CE999331B510C1D003378BF /* UILabel.cpp in Sources */,
+				0C62CCE51BF8864200B2454B /* StateMoveCenterImpl.cpp in Sources */,
 				0C7764241A3C7ABE0010E1BB /* UIButton.cpp in Sources */,
 				0C5F954C1A614F0100BE91E9 /* StateIdleImpl.cpp in Sources */,
 				0C73BF401B883D2100A9B7D2 /* IMGUI.cpp in Sources */,
@@ -734,6 +751,7 @@
 				0C8889A71A2B1AB100068098 /* StateDraw.cpp in Sources */,
 				0C88898B1A2984C600068098 /* Intersect.cpp in Sources */,
 				0C45C6051A86213300A5424F /* TextureManager.cpp in Sources */,
+				0C91DBEC1BEF653300AA38D3 /* SketchLine.cpp in Sources */,
 				0C68F9B21B229DAA00DDD23A /* StateDelete.cpp in Sources */,
 				0C5F954D1A614F0100BE91E9 /* StateSelectPlaneImpl.cpp in Sources */,
 				0C8889921A2AB05300068098 /* State.cpp in Sources */,
@@ -862,7 +880,7 @@
 				LIBRARY_SEARCH_PATHS = "../../lib/lua-5.2.3/src/";
 				OTHER_CFLAGS = (
 					"-I./cashew/",
-					"-I./../../lib/lua-5.2.3/src/"
+					"-I./../../lib/lua-5.2.3/src/",
 				);
 				OTHER_CPLUSPLUSFLAGS = "$(OTHER_CFLAGS)";
 				PRODUCT_BUNDLE_IDENTIFIER = "me.billhsu.$(PRODUCT_NAME:rfc1034identifier)";

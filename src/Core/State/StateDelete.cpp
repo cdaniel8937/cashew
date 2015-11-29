@@ -6,10 +6,10 @@
 #include "Core/Controller/Controller.h"
 #include "Core/Controller/Mouse.h"
 #include "Core/Basic/Plane.h"
+#include "Core/Basic/SketchLine.h"
 
 StateDelete::StateDelete() {
     stateID = STATE_DELETE;
-    isCurrentLineSelected = false;
     assert(statePool[stateID] == NULL);
     statePool[stateID] = this;
     stateName = "delete";
@@ -21,20 +21,18 @@ void StateDelete::MouseButton(int button, int state, int x, int y) {
         mCamera->setCamDist(mCamera->distance + 0.1f * state);
     }
     if (button == Mouse::MOUSE_BUTTON_LEFT && state == Mouse::MOUSE_ACTION_UP) {
-        if (mCamera->getLine(Controller::mouseX, Controller::mouseY,
-                             Controller::sketchLines, currentLine) >= 0) {
-            Controller::delLine(currentLine);
-            isCurrentLineSelected = false;
+        if (Controller::bCurrLine) {
+            SketchLine* sketchLine =
+                SketchLine::lineSegmentToSkectLine(Controller::currLine.ID);
+            if (sketchLine == NULL) {
+                return;
+            }
+            SketchLine::deleteSketchLine(*sketchLine);
+            Controller::bCurrLine = false;
         }
     }
 }
 void StateDelete::PassiveMotion(int x, int y) {
-    if (mCamera->getLine(Controller::mouseX, Controller::mouseY,
-                         Controller::sketchLines, currentLine) >= 0) {
-        isCurrentLineSelected = true;
-    } else {
-        isCurrentLineSelected = false;
-    }
 }
 void StateDelete::MouseRightDrag(int dx, int dy) {
     Controller::rotate.x -= dy;

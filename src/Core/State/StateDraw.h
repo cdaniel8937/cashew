@@ -2,8 +2,8 @@
 // billhsu.x@gmail.com
 #pragma once
 #include "Core/State/State.h"
+#include "Core/Basic/SketchLine.h"
 
-class UIButton;
 class StateDraw : public State {
    public:
     StateDraw();
@@ -17,10 +17,15 @@ class StateDraw : public State {
     std::vector<Vector3> selectedPoints;
     Vector3 startPoint, endPoint;
 
-    int internalState;
+    static int internalState;
     enum { STATE_DRAW_IDLE, STATE_DRAW_START_POINT_SELECTED };
     enum { BTN_ID_DRAW_PLANE_DONE };
 
    private:
+    void addLineWithMirror();
     static int btnDrawPlaneDoneEvent(lua_State* L);
+
+   protected:
+    SketchLine currentLine, currentLineMirrorX, currentLineMirrorY,
+        currentLineMirrorZ;
 };

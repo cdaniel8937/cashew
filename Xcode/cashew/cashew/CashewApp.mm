@@ -13,9 +13,11 @@
 #include "Core/Math/Matrices.h"
 #include "OpenGL/Impl/Scene/Scene.h"
 #include "Core/Controller/MouseEventQueue.h"
+#include "Core/Basic/SketchLine.h"
 
 #include "Core/Camera/Camera.h"
 #include "OpenGL/Impl/State/StateIdleImpl.h"
+#include "OpenGL/Impl/State/StateMoveCenterImpl.h"
 #include "OpenGL/Impl/State/StateSelectPlaneImpl.h"
 #include "OpenGL/Impl/State/StateDrawImpl.h"
 #include "OpenGL/Impl/State/StateDeleteImpl.h"
@@ -69,6 +71,7 @@ bool windowPaused = false;
     textureManager->loadTexture("media/textures/point_current.png", 4);
     textureManager->loadTexture("media/textures/button_cancel.png", 4);
     textureManager->loadTexture("media/textures/button_confirm.png", 4);
+    textureManager->loadTexture("media/textures/button_movecenter.png", 4);
     textureManager->loadTexture("media/textures/button_horizontal.png", 4);
     textureManager->loadTexture("media/textures/button_vertical.png", 4);
     textureManager->loadTexture("media/textures/social-icon.png", 4);
@@ -84,6 +87,7 @@ bool windowPaused = false;
     }
     mController->init();
     mController->state_idle = new StateIdleImpl();
+    mController->state_move_center = new StateMoveCenterImpl();
     mController->state_select_plane = new StateSelectPlaneImpl();
     mController->state_draw = new StateDrawImpl();
     mController->state_delete = new StateDeleteImpl();
@@ -117,11 +121,7 @@ int newFile(lua_State* L) {
     std::string option =
         showNewFileDialogWrapper((__bridge void*)fileOperations);
     if (option == "OK") {
-        Controller::sketchLines.clear();
-        Controller::lineOperations.clear();
-        Controller::redoOperations.clear();
-        Controller::deletedLines.clear();
-        Controller::redoLines.clear();
+        SketchLine::getGlobalSketchLines().clear();
     }
     return 0;
 }
@@ -203,21 +203,22 @@ int saveFile(lua_State* L) {
     std::cout << "Saving to " << filename << std::endl;
     std::ofstream fileStream;
     fileStream.open(filename);
-    if (filename.substr(filename.find_last_of(".") + 1) == "cashew") {
-        fileStream << "cashew_v1" << std::endl;
-        fileStream << Controller::sketchLines.size() << std::endl;
-        for (int i = 0; i < Controller::sketchLines.size(); ++i) {
-            fileStream << Controller::sketchLines[i].points[0] << " "
-                       << Controller::sketchLines[i].points[1] << std::endl;
-        }
-    } else if (filename.substr(filename.find_last_of(".") + 1) == "stl") {
-        fileStream << "solid cashew" << std::endl;
-        for (int i = 0; i < Controller::sketchLines.size(); ++i) {
-            fileStream << lineSegmentToSTLCube(Controller::sketchLines[i])
-                       << std::endl;
-        }
-        fileStream << "endsolid cashew" << std::endl;
-    }
+    //    if (filename.substr(filename.find_last_of(".") + 1) == "cashew") {
+    //        fileStream << "cashew_v1" << std::endl;
+    //        fileStream << Controller::sketchLines.size() << std::endl;
+    //        for (int i = 0; i < Controller::sketchLines.size(); ++i) {
+    //            fileStream << Controller::sketchLines[i].points[0] << " "
+    //                       << Controller::sketchLines[i].points[1] <<
+    //                       std::endl;
+    //        }
+    //    } else if (filename.substr(filename.find_last_of(".") + 1) == "stl") {
+    //        fileStream << "solid cashew" << std::endl;
+    //        for (int i = 0; i < Controller::sketchLines.size(); ++i) {
+    //            fileStream << lineSegmentToSTLCube(Controller::sketchLines[i])
+    //                       << std::endl;
+    //        }
+    //        fileStream << "endsolid cashew" << std::endl;
+    //    }
     fileStream.close();
     MouseEventQueue::clear();
     return 0;
@@ -228,29 +229,29 @@ int openFile(lua_State* L) {
     std::string filename =
         showOpenFileDialogWrapper((__bridge void*)fileOperations);
     windowPaused = false;
-    if (filename == "")
-        return 0;
-    std::cout << "Opening " << filename << std::endl;
-    Controller::sketchLines.clear();
-    std::ifstream fileStream;
-    fileStream.open(filename);
-    std::string versionStr;
-    fileStream >> versionStr;
-    std::cout << "Cashew version: " << versionStr << std::endl;
-    int sketchSize;
-    fileStream >> sketchSize;
-    std::cout << "Sketches: " << sketchSize << std::endl;
-    for (int i = 0; i < sketchSize; ++i) {
-        Vector3 point1, point2;
-        fileStream >> point1 >> point2;
-        LineSegment line = LineSegment(point1, point2);
-        Controller::addLine(line);
-    }
-    Controller::lineOperations.clear();
-    Controller::redoOperations.clear();
-    Controller::deletedLines.clear();
-    Controller::redoLines.clear();
-    fileStream.close();
+    //    if (filename == "")
+    //        return 0;
+    //    std::cout << "Opening " << filename << std::endl;
+    //    Controller::sketchLines.clear();
+    //    std::ifstream fileStream;
+    //    fileStream.open(filename);
+    //    std::string versionStr;
+    //    fileStream >> versionStr;
+    //    std::cout << "Cashew version: " << versionStr << std::endl;
+    //    int sketchSize;
+    //    fileStream >> sketchSize;
+    //    std::cout << "Sketches: " << sketchSize << std::endl;
+    //    for (int i = 0; i < sketchSize; ++i) {
+    //        Vector3 point1, point2;
+    //        fileStream >> point1 >> point2;
+    //        LineSegment line = LineSegment(point1, point2);
+    //        Controller::addLine(line);
+    //    }
+    //    Controller::lineOperations.clear();
+    //    Controller::redoOperations.clear();
+    //    Controller::deletedLines.clear();
+    //    Controller::redoLines.clear();
+    //    fileStream.close();
     MouseEventQueue::clear();
     return 0;
 }
@@ -364,6 +365,12 @@ int openFile(lua_State* L) {
 }
 - (void)mouseExitedWithX:(CGFloat)x andY:(CGFloat)y {
     windowPaused = true;
+    if (State::currState->getStateID() == State::STATE_DRAW) {
+        if (StateDraw::internalState ==
+            StateDraw::STATE_DRAW_START_POINT_SELECTED) {
+            windowPaused = false;
+        }
+    }
 }
 - (void)keyDown:(unichar)key {
     mController->Keyboard(key, Controller::KEY_DOWN);
