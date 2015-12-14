@@ -29,6 +29,7 @@
 #include "OpenGL/Impl/Basic/PlaneRenderer.h"
 #include "OpenGL/Impl/Basic/PointRenderer.h"
 #include "OpenGL/Impl/Basic/LineSegmentRenderer.h"
+#include "OpenGL/Impl/Basic/SketchLineRenderer.h"
 
 #include "OpenGL/Fonts/FontRenderer.h"
 
@@ -99,11 +100,12 @@ bool windowPaused = false;
 
     State::enterState(mController->state_idle);
 
-    PlaneRenderer::prepareRenderData();
-    PointRenderer::prepareRenderData();
-    LineSegmentRenderer::prepareRenderData();
-    FontRenderer::prepareRenderData();
-    IMGUIImpl::prepareRenderData();
+    PlaneRenderer::init();
+    PointRenderer::init();
+    LineSegmentRenderer::init();
+    SketchLineRenderer::init();
+    FontRenderer::init();
+    IMGUIImpl::init();
 
     depthPeeling = &DepthPeeling::getInstance();
     depthPeeling->setPassCount(2);
@@ -262,7 +264,11 @@ int openFile(lua_State* L) {
     int y = mController->windowHeight - (int)locationInWindow.y;
 
     MouseEvent event;
-    event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    if (NSShiftKeyMask & [NSEvent modifierFlags]) {
+        event.mouseButton = Mouse::MOUSE_BUTTON_RIGHT;
+    } else {
+        event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    }
     event.mouseButtonAction = Mouse::MOUSE_ACTION_UP;
     event.mousePosX = x;
     event.mousePosY = y;
@@ -276,7 +282,11 @@ int openFile(lua_State* L) {
     int y = mController->windowHeight - (int)locationInWindow.y;
 
     MouseEvent event;
-    event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    if (NSShiftKeyMask & [NSEvent modifierFlags]) {
+        event.mouseButton = Mouse::MOUSE_BUTTON_RIGHT;
+    } else {
+        event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    }
     event.mouseButtonAction = Mouse::MOUSE_ACTION_DOWN;
     event.mousePosX = x;
     event.mousePosY = y;
@@ -344,7 +354,11 @@ int openFile(lua_State* L) {
                        andY:(CGFloat)y {
     y = mController->windowHeight - y;
     MouseEvent event;
-    event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    if (NSShiftKeyMask & [NSEvent modifierFlags]) {
+        event.mouseButton = Mouse::MOUSE_BUTTON_RIGHT;
+    } else {
+        event.mouseButton = Mouse::MOUSE_BUTTON_LEFT;
+    }
     event.mouseButtonAction = Mouse::MOUSE_ACTION_DRAG;
     event.mousePosX = x;
     event.mousePosY = y;
@@ -379,12 +393,22 @@ int openFile(lua_State* L) {
     mController->Keyboard(key, Controller::KEY_UP);
 }
 - (void)update:(NSTimeInterval)timeInterval {
-    if (windowPaused)
+    if (windowPaused) {
         return;
-    std::queue<MouseEvent> queueCpy = MouseEventQueue::getQueue();
+    }
+    int numClickEvents = 0;
+    std::queue<MouseEvent> queueCpy = MouseEventQueue::getQueueCpy();
     while (queueCpy.size() > 0) {
-        processMouseEventForUI(queueCpy.front());
+        MouseEvent event = queueCpy.front();
+        if (event.mouseButtonAction == Mouse::MOUSE_ACTION_DOWN ||
+            event.mouseButtonAction == Mouse::MOUSE_ACTION_UP) {
+            ++numClickEvents;
+        }
+        processMouseEventForUI(event);
         queueCpy.pop();
+        if (numClickEvents >= 1) {
+            break;
+        }
     }
     MouseEvent event;
     while (MouseEventQueue::pollEvent(event)) {
@@ -436,6 +460,19 @@ void processMouseEvent(MouseEvent event) {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     glClearColor(BACKGROUND_COLOR);
     mController->render();
+    SketchLine sketchLine;
+    for (int i = 0; i < 16; ++i) {
+        float radius = 8.0f;
+        float PI = 3.1415926f;
+        float currentPosX = sinf((float)i / 31.0f * 2 * PI) * radius;
+        float currentPosZ = cosf((float)i / 31.0f * 2 * PI) * radius;
+        float nextPosX = sinf((float)(i + 1) / 31.0f * 2 * PI) * radius;
+        float nextPosZ = cosf((float)(i + 1) / 31.0f * 2 * PI) * radius;
+        sketchLine.addLineSegment(
+            LineSegment(Vector3(currentPosX, 0, currentPosZ),
+                        Vector3(nextPosX, 0, nextPosZ)));
+    }
+    SketchLineRenderer::render(sketchLine, Vector3(1, 1, 1));
     depthPeeling->render();
     IMGUIImpl::render();
 #ifdef DEBUG
@@ -481,6 +518,7 @@ void processMouseEvent(MouseEvent event) {
     PointRenderer::release();
     LineSegmentRenderer::release();
     FontRenderer::release();
+    SketchLineRenderer::release();
     [super clearGLContext];
 }
 
