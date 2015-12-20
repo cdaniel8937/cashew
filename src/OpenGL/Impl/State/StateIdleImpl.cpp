@@ -17,12 +17,11 @@ StateIdleImpl::StateIdleImpl() {
 }
 void StateIdleImpl::render() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    Scene::renderLineSegments(NULL);
+    Scene::renderSketchLines(NULL);
     if (Controller::bCurrLine) {
         SketchLine* sketchLine =
             SketchLine::lineSegmentToSkectLine(Controller::currLine.ID);
-        Scene::renderSingleSketchLine(*sketchLine, Vector4(0, 1, 0, 0.5f),
-                                      0.15f);
+        Scene::renderSingleSketchLine(*sketchLine, Vector3(0, 1, 0), 0.15f);
     }
     depthPeeling->addToRenderCallbackList(Scene::drawSceneWrapper);
     depthPeeling->addToRenderCallbackList(Scene::renderCurrentPoint);
